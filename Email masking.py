@@ -37,12 +37,16 @@ def generate_text(l) -> str:
     return text
 def generate_tld():
     domain_list = pd.DataFrame({'Domain':['mail.ru', 'gmail.com', 'yandex.ru', 'rambler.ru', ]})
-
+    randomtld = secrets.choice(domain_list.Domain)
+    return randomtld
 
 def generate_secret_text(p_set, p_dictionary, length):
     #p_set - лист значений, p_dictionary - словать, length - длина текста, который будет генерироваться
     while len(p_set) < len(p_dictionary):
         p_set.add(generate_text(length))
+def generate_secret_tld(p_list, p_dict):
+    while len(p_list) < len(p_dict):
+        p_list.add(generate_tld())
 
 def add_value_to_dict(p_dict, p_set):
     #p_dict - словарь, p_set - множество значений
@@ -90,4 +94,6 @@ def email_multi_pseudonymise(df, column):
 TestData = pd.DataFrame({'Email':['Nikolaev@mail.ru', 'danila@osipova.net', 'Aleksandr@gmail.com']})
 email_multi_pseudonymise(TestData, 'Email')
 print(TestData)
+
+print(generate_tld())
 
