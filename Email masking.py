@@ -27,7 +27,7 @@ def partition_email(email, local_part, domain_part, tld_part):
     tld_part.update({groups[2]: ''})
     return str(groups)
 
-def generate_text(l) -> str:
+def generate_text(l):
     #l - граница количества символов, которые будут прибавлены
     alphabet = string.ascii_letters + string.digits
     randomword_list = pd.read_csv(r'C:\Users\ktota\Desktop\RandomWordsOnEnglish.csv')
@@ -53,12 +53,11 @@ def add_value_to_dict(p_dict, p_set):
     for key, value in p_dict.items():
         p_dict[key] = p_set.pop()
 
-def reconstruct_email(text, local_part, domain_part, tld_part) -> str:
+def reconstruct_email(text, local_part,tld_part) -> str:
     m = re.search(reconstruct_regex, text)
     if m:
         groups = m.groups()
-        reconstructed = str(local_part.get(groups[0])) + "@" + str(domain_part.get(groups[1])) + "." + str(tld_part.get(
-            groups[2]))
+        reconstructed = str(local_part.get(groups[0])) + "@" + str(tld_part.get(groups[2]))
         return reconstructed
     else:
         return None
@@ -81,7 +80,7 @@ def email_multi_pseudonymise(df, column):
     #Сгенерируем значения для каждой части email и заполним множества
     generate_secret_text(pseudo_local, local_part, 2)
     generate_secret_text(pseudo_domain, domain_part, 1)
-    generate_secret_text(pseudo_tld, tld_part, 1)
+    generate_secret_tld(pseudo_tld, tld_part)
 
     # Добавим значения из множеств в словари
     add_value_to_dict(local_part, pseudo_local)
@@ -89,11 +88,10 @@ def email_multi_pseudonymise(df, column):
     add_value_to_dict(tld_part, pseudo_tld)
 
     #Пересоберем адрес почты по всей колонке
-    df[column] = df[column].apply(lambda x: reconstruct_email(x, local_part, domain_part, tld_part))
+    df[column] = df[column].apply(lambda x: reconstruct_email(x, local_part, tld_part))
 
 TestData = pd.DataFrame({'Email':['Nikolaev@mail.ru', 'danila@osipova.net', 'Aleksandr@gmail.com']})
 email_multi_pseudonymise(TestData, 'Email')
 print(TestData)
 
-print(generate_tld())
 
