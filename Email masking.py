@@ -16,6 +16,7 @@ reconstruct_regex = re.compile(r"'(.+)', '(.+)', '(.+)'")
 
 def partition_email(email, local_part, domain_part, tld_part):
     #email - почта, local_part, domain_part, tld_part - пустые словари
+    '''Разделим почту на три части и получим словари'''
     email = str(email).lower()
     m = re.search(email_split_regex, email)
     if m:
@@ -29,19 +30,22 @@ def partition_email(email, local_part, domain_part, tld_part):
 
 def generate_text(l):
     #l - граница количества символов, которые будут прибавлены
+    '''Создадим случайный текст'''
     alphabet = string.ascii_letters + string.digits
-    randomword_list = pd.read_csv(r'C:\Users\ktota\Desktop\RandomWordsOnEnglish.csv')
+    randomword_list = pd.read_csv(r'RandomWordsOnEnglish.csv')
     df = pd.DataFrame(randomword_list)
     randomword = str(secrets.choice(df.Word))
     text = randomword.join(secrets.choice(alphabet) for i in range(2+secrets.randbelow(l)))
     return text
 def generate_tld():
+    '''Создадим случайный домен'''
     domain_list = pd.DataFrame({'Domain':['mail.ru', 'gmail.com', 'yandex.ru', 'rambler.ru', ]})
     randomtld = secrets.choice(domain_list.Domain)
     return randomtld
 
 def generate_secret_text(p_set, p_dictionary, length):
     #p_set - лист значений, p_dictionary - словать, length - длина текста, который будет генерироваться
+    '''Создадим столько значений словаря, сколько нужно'''
     while len(p_set) < len(p_dictionary):
         p_set.add(generate_text(length))
 def generate_secret_tld(p_list, p_dict):
@@ -49,11 +53,13 @@ def generate_secret_tld(p_list, p_dict):
         p_list.add(generate_tld())
 
 def add_value_to_dict(p_dict, p_set):
+    '''Добавление нового значение в словарь'''
     #p_dict - словарь, p_set - множество значений
     for key, value in p_dict.items():
         p_dict[key] = p_set.pop()
 
 def reconstruct_email(text, local_part,tld_part) -> str:
+    '''Пересоздание адреса почты из основной части+доменной'''
     m = re.search(reconstruct_regex, text)
     if m:
         groups = m.groups()
@@ -63,6 +69,7 @@ def reconstruct_email(text, local_part,tld_part) -> str:
         return None
 
 def email_multi_pseudonymise(df, column):
+    '''Замаскируем колонку с адресами почты'''
 
     #Будем добавлять случайно-сгенерированные слова в разные части email-адреса
     local_part = dict()
@@ -93,5 +100,6 @@ def email_multi_pseudonymise(df, column):
 TestData = pd.DataFrame({'Email':['Nikolaev@mail.ru', 'danila@osipova.net', 'Aleksandr@gmail.com']})
 email_multi_pseudonymise(TestData, 'Email')
 print(TestData)
+
 
 
