@@ -1,13 +1,24 @@
 import secrets
 from random import randint
 from secrets import choice
+import random
+import ipaddr
 def ipv4_generator():
     '''Генератор случайных публичных IPv4'''
+    reserved4 = ['0.0.0.0', '10.0.0.0', '100.64.0.0', '127.0.0.0',
+                '169.254.0.0', '172.16.0.0', '192.0.0.0',
+                '192.0.0.0', '192.0.2.0', '192.88.99.0',
+                '192.168.0.0', '192.18.0.0', '198.51.100.0',
+                '203.0.113.0', '240.0.0.0', '255.255.255.255']
+    private = [10,127,169,172,192]
     a = randint(0,255)
-    if (a!= 10 and a!=127 and a!=169 and a!=172 and a!=192):
+    if (a not in private):
         rndIP = [a,randint(0,255), randint(0,255), randint(0,255)]
         ip = '.'.join(str(x) for x in rndIP)
-        return ip
+        if ip not in reserved4:
+            return ip
+        else:
+            ipv4_generator()
     else:
         ipv4_generator()
 def ipv6_generator():
@@ -51,7 +62,4 @@ def mask_df_ip(df,column):
     df[column] = df[column].apply(lambda x: mask_ip_v6(x))
 def mask_df_mac(df, column):
     df[column] = df[column].apply(lambda x: mask_mac(x))
-
-
-# print(ipv4_generator())
 
