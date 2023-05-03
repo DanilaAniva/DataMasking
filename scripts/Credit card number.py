@@ -10,27 +10,19 @@ def gen():
 
     return card_number
 
-def generate_cardnumber(card_number=gen()):
+def generate_cardnumber():
     '''Получим номер карты удовлетворяющий проверке Луна'''
-
-    summa = 0
-
-    for number in card_number[::2]:
-        if int(number) * 2 > 9:
-            number = int(number) * 2 - 9
-        else:
-            number = int(number) * 2
-        summa += int(number)
-
-    for number in card_number[1::2]:
-        summa += int(number)
-
-    if (summa % 10) != 0:
-        summa2 = (summa + 10) - (summa % 10)
-        last = summa2 - summa
-        card_number += str(last)
-
-    return str(card_number)
+    a = []
+    number = gen()
+    for i,k in enumerate(number):
+        l = [int(number[i]) * 2 if i%2==0 else int(number[i])]
+        l = [a.append(l[i]-9) if (l[i]>9) else a.append(l[i]) for i,k in enumerate(l)]
+    summa = sum(a)
+    if (summa%10)!=0:
+        summa2 = (summa+10) - (summa%10)
+        last = summa2-summa
+        number += str(last)
+    return ''.join(number)
 
 def luhn(code):
     '''Алгоритм проверки контрольного числа Луна(Luhn)'''
@@ -43,7 +35,7 @@ def luhn(code):
     return ((evens + odds) % 10 == 0)
 
 # Test1
-# print (generate_cardnumber())
+print (generate_cardnumber())
 
 def mask_cardnumber(number):
     '''Получим замену номера карты по словарю'''
@@ -55,8 +47,4 @@ def mask_cardnumber(number):
 def mask_df_cardnumber(df,column):
     '''Применим маскирование по DataFrame'''
     df[column] = df[column].apply(lambda x: mask_cardnumber())
-
-
-
-
 
