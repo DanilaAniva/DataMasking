@@ -26,16 +26,21 @@ def generate_bank_number():
     '''20 цифр. Формат 111.22.333.4.5555.6666666, где 111 - кто открыл счёт и с какой целью, 22 - специфика
     деятельности владельца, 333 - валюта, 4 - проверочный код, 5555 - отделение банка в котором открыт счет,
     666666 - порядковый номер счёта в банке. Для общего понимания выше написана часть кодов'''
-    bank_number = ['408', '00', '810', str(randint(0,10)), str(randint(0000,10000)), str(randint(0000000, 10000000))]
+    check_code = ''.join([str(randint(0,9))])
+    BankBranch = ''.join([str(randint(0,9)), str(randint(0,9)), str(randint(0,9)), str(randint(0,9))])
+    OwnerNumber = ''.join([str(randint(0,9)), str(randint(0,9)), str(randint(0,9)),
+                           str(randint(0,9)), str(randint(0,9)), str(randint(0,9)), str(randint(0,9))])
+    bank_number = ['408', '00', '810', check_code, BankBranch, OwnerNumber]
     return ''.join(x for x in bank_number)
 def mask_bank_number(number):
     replacement = {}
-    replacement[number] =  generate_bank_number()
+    replacement[number] = generate_bank_number()
     return replacement[number]
 
-#Test
-# print(generate_bank_number())
-# print(len(generate_bank_number()))
+# Test
+print(generate_bank_number())
+print(len(generate_bank_number()))
+
 
 def mask_df_bank_number(df,column):
     df[column] = df[column].apply(lambda x: mask_bank_number(x))
