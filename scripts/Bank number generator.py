@@ -28,6 +28,14 @@ def generate_bank_number():
     666666 - порядковый номер счёта в банке. Для общего понимания выше написана часть кодов'''
     bank_number = ['408', '00', '810', str(randint(0,10)), str(randint(0000,10000)), str(randint(0000000, 10000000))]
     return ''.join(x for x in bank_number)
-print(generate_bank_number())
-print(len(generate_bank_number()))
+def mask_bank_number(number):
+    replacement = {}
+    replacement[number] =  generate_bank_number()
+    return replacement[number]
 
+#Test
+# print(generate_bank_number())
+# print(len(generate_bank_number()))
+
+def mask_df_bank_number(df,column):
+    df[column] = df[column].apply(lambda x: mask_bank_number(x))
