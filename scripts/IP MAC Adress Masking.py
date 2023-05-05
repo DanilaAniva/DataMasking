@@ -27,8 +27,8 @@ def ipv6_generator():
 
 def ip_private_generator():
     '''Генератор частных IP'''
-    satartswith = [10,127,169,172,192]
-    rndIP = [secrets.choice(satartswith), randint(0,255),randint(0,255), randint(0,255)]
+    startswith = [10,127,169,172,192]
+    rndIP = [secrets.choice(startswith), randint(0,255),randint(0,255), randint(0,255)]
     ip = '.'.join(str(x) for x in rndIP)
     return ip
 
@@ -62,4 +62,3 @@ def mask_df_ip(df,column):
     df[column] = df[column].apply(lambda x: mask_ip_v6(x))
 def mask_df_mac(df, column):
     df[column] = df[column].apply(lambda x: mask_mac(x))
-
