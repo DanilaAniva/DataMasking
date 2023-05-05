@@ -4,7 +4,7 @@ import string
 import pandas as pd
 
 
-testmail = 'danila@osipova.net'
+testmail = 'Sergey@ismailov.net'
 localpart = {}
 domainpart = {}
 tldpart = {}
@@ -97,7 +97,7 @@ def email_multi_pseudonymise(df, column):
     #Пересоберем адрес почты по всей колонке
     df[column] = df[column].apply(lambda x: reconstruct_email(x, local_part, tld_part))
 
-TestData = pd.DataFrame({'Email':['Nikolaev@mail.ru', 'Sergeyy@osipova.net', 'Aleksandr@gmail.com']})
+TestData = pd.DataFrame({'Email':['Nikolaev@mail.ru', 'Sergeyy@ismailov.net', 'Aleksandr@gmail.com']})
 email_multi_pseudonymise(TestData, 'Email')
 print(TestData)
 
