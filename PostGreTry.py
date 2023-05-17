@@ -76,6 +76,8 @@ def main():
               str(i.phone) + ' | IP:' + str(i.IP) + ' | MAC:' + str(i.MAC) + ' | creditcard:' + str(i.creditcard))
 
     data = getdict(PersonalData)
+    # plt.hist(data['salary'])
+    # plt.show()
     mask_df_fullname(data, 'name')
     mask_df_email(data, 'email')
     mask_df_age_DP_custom(data, 'age', 0.5, sensitivity=5)
@@ -84,7 +86,8 @@ def main():
     mask_df_ip(data, 'IP')
     mask_df_mac(data, 'MAC')
     mask_df_cardnumber(data, 'creditcard')
-
+    # plt.hist(data['salary'])
+    # plt.show()
 
 
 main()
