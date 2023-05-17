@@ -68,38 +68,37 @@ def reconstruct_email(text, local_part,tld_part) -> str:
     else:
         return None
 
-def email_multi_pseudonymise(df, column):
+def mask_df_email(df, column):
     '''Замаскируем колонку с адресами почты'''
 
-    #Будем добавлять случайно-сгенерированные слова в разные части email-адреса
+    '''Будем добавлять случайно-сгенерированные слова в разные части email-адреса'''
     local_part = dict()
     domain_part = dict()
     tld_part = dict()
 
-    #Без повторяющихся значений
     pseudo_local = set()
     pseudo_domain = set()
     pseudo_tld = set()
 
-    # Разделим данные из датафрейма на части
+    '''Разделим данные из датафрейма на части'''
     df[column] = df[column].apply(lambda x: partition_email(x, local_part, domain_part, tld_part))
 
-    #Сгенерируем значения для каждой части email и заполним множества
+    '''Сгенерируем значения для каждой части email и заполним множества'''
     generate_secret_text(pseudo_local, local_part, 2)
     generate_secret_text(pseudo_domain, domain_part, 1)
     generate_secret_tld(pseudo_tld, tld_part)
 
-    # Добавим значения из множеств в словари
+    '''Добавим значения из множеств в словари'''
     add_value_to_dict(local_part, pseudo_local)
     add_value_to_dict(domain_part, pseudo_domain)
     add_value_to_dict(tld_part, pseudo_tld)
 
-    #Пересоберем адрес почты по всей колонке
+    '''Пересоберем адрес почты по всей колонке'''
     df[column] = df[column].apply(lambda x: reconstruct_email(x, local_part, tld_part))
 
-TestData = pd.DataFrame({'Email':['Nikolaev@mail.ru', 'Sergeyy@ismailov.net', 'Aleksandr@gmail.com']})
-email_multi_pseudonymise(TestData, 'Email')
-print(TestData)
+# TestData = pd.DataFrame({'Email':['Nikolaev@mail.ru', 'Sergeyy@ismailov.net', 'Aleksandr@gmail.com']})
+# mask_df_email(TestData, 'Email')
+# print(TestData)
 
 
 

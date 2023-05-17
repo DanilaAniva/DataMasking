@@ -63,9 +63,9 @@ def validate_inn(inn):
             return True if controls == inn[-2:] else False
     else:
         return False
-def mask_INN_ul(df, column):
+def mask_df_INN_ul(df, column):
     df[column] = df[column].apply(lambda x: get_random_inn_ul())
-def mask_INN_fl(df, column):
+def mask_df_INN_fl(df, column):
     df[column] = df[column].apply(lambda x: get_random_inn_fl())
 
 #Test

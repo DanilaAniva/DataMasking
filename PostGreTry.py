@@ -1,10 +1,20 @@
 import numpy as np
 import csv
-from scripts import scripts2
 from peewee import *
 import pandas as pd
 import secrets
+import matplotlib.pyplot as plt
+from scripts.Names import mask_df_fullname
+from scripts.EmailMasking import mask_df_email
+from scripts.DifferencialPrivacy import mask_df_age_DP_custom
+from scripts.PhoneNumber import mask_df_phone
+from scripts.IPMAC import mask_df_ip, mask_df_mac
+from scripts.Cardnumber import mask_df_cardnumber
+from scripts.DifferencialPrivacy import mask_df_DP
+plt.style.use('ggplot')
+
 db = PostgresqlDatabase('postgres', host = 'localhost', port = '5432', user = 'postgres', password = '1')
+
 class BaseModel(Model):
     class Meta:
         database = db
@@ -16,7 +26,6 @@ class PersonalData(BaseModel):
     age = IntegerField()
     creditcard = TextField()
     phone = TextField()
-    # place = TextField()
     salary = IntegerField()
     #bank_number = IntegerField()
     #PassportNumber = IntegerField()
@@ -37,7 +46,7 @@ def insertsomedata():
     with db.atomic():
         for row in combined.itertuples():
             PersonalData.create(name = row.Name, age=row._2, email=row.email, salary = row.salary, creditcard = row.creditcard, phone=row.phone_number, IP = row.IP, MAC=row.MAC)
-def initialize():
+def initialize(db=db, tables = Tables):
     '''Подключение к базе данных и пересоздание таблиц'''
     db.connect()
     try:
@@ -49,22 +58,9 @@ def getdict(tablename):
     '''Возвращает датафрейм для всех атрибутов таблицы'''
     return pd.DataFrame(tablename.select().dicts())
 
-# def get_column_dataframe(attribute, table_name):
-#     df = pd.DataFrame()
-#     slovar = {}
-#     for record in table_name.select():
-#         slovar[attribute] = table_name.attribute
-#
-# def mask_records():
-# def updaterecords():
-
-
-def mask_names(db,table_name, column):
-    with db.atomic:
-        name_list = []
-        query = table_name.select()
-        for i in query:
-            table_name.update(column=secrets.choice(name_list)).where(table_name.id == i).execute()
+def update_row(db, table_name, column, data, iter):
+    query = table_name.select()
+    table_name.update(column=data).where(table_name.id == iter).execute()
 
 def main():
     initialize()
@@ -79,7 +75,15 @@ def main():
         print('name: '+ str(i.name) + ' | age:' + str(i.age) + ' | email:' + str(i.email) + ' | salary:' + str(i.salary) + ' | phone:' +
               str(i.phone) + ' | IP:' + str(i.IP) + ' | MAC:' + str(i.MAC) + ' | creditcard:' + str(i.creditcard))
 
-    df = getdict(PersonalData)
+    data = getdict(PersonalData)
+    mask_df_fullname(data, 'name')
+    mask_df_email(data, 'email')
+    mask_df_age_DP_custom(data, 'age', 0.5, sensitivity=5)
+    mask_df_DP(data, 'salary', 0.5, 10000, 0, 1000000)
+    mask_df_phone(data, 'phone')
+    mask_df_ip(data, 'IP')
+    mask_df_mac(data, 'MAC')
+    mask_df_cardnumber(data, 'creditcard')
 
 
 

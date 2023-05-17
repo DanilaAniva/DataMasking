@@ -35,7 +35,7 @@ def luhn(code):
     return ((evens + odds) % 10 == 0)
 
 # Test1
-print (generate_cardnumber())
+# print (generate_cardnumber())
 
 def mask_cardnumber(number):
     '''Получим замену номера карты по словарю'''
@@ -46,5 +46,5 @@ def mask_cardnumber(number):
 
 def mask_df_cardnumber(df,column):
     '''Применим маскирование по DataFrame'''
-    df[column] = df[column].apply(lambda x: mask_cardnumber())
+    df[column] = df[column].apply(lambda x: mask_cardnumber(x))
 

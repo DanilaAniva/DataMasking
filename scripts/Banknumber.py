@@ -27,10 +27,9 @@ def generate_bank_number():
     деятельности владельца, 333 - валюта, 4 - проверочный код, 5555 - отделение банка в котором открыт счет,
     666666 - порядковый номер счёта в банке. Для общего понимания выше написана часть кодов'''
     check_code = ''.join([str(randint(0,9))])
-    BankBranch = ''.join([str(randint(0,9)), str(randint(0,9)), str(randint(0,9)), str(randint(0,9))])
-    OwnerNumber = ''.join([str(randint(0,9)), str(randint(0,9)), str(randint(0,9)),
-                           str(randint(0,9)), str(randint(0,9)), str(randint(0,9)), str(randint(0,9))])
-    bank_number = ['408', '00', '810', check_code, BankBranch, OwnerNumber]
+    bankbranch = ''.join([str(randint(0,9)) for i in range(4)])
+    ownernumber = ''.join([str(randint(0,9)) for i in range(7)])
+    bank_number = ['408', '00', '810', check_code, bankbranch, ownernumber]
     return ''.join(x for x in bank_number)
 def mask_bank_number(number):
     replacement = {}

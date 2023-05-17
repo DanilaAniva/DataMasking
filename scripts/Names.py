@@ -124,10 +124,10 @@ def mask_df_female_name_rus(df, column):
 def mask_df_fullname_rus(df, column):
     df[column] = df[column].apply(lambda x: mask_fullname_rus(x))
 
-Test = pd.DataFrame({'fullname':['Alexandr Danilovich Marikov', 'Genadiy Alexandrovich Meshin']})
-print('Исходные данные: ')
-print(Test)
-mask_df_fullname_rus(Test, 'fullname')
-print('Маскированные данные: ')
-print(Test)
+# Test = pd.DataFrame({'fullname':['Alexandr Danilovich Marikov', 'Genadiy Alexandrovich Meshin']})
+# print('Исходные данные: ')
+# print(Test)
+# mask_df_fullname_rus(Test, 'fullname')
+# print('Маскированные данные: ')
+# print(Test)
 
