@@ -8,13 +8,12 @@ from scripts.Names import mask_df_fullname
 from scripts.EmailMasking import mask_df_email
 from scripts.DifferencialPrivacy import mask_df_age_DP_custom
 from scripts.PhoneNumber import mask_df_phone
-from scripts.IPMAC import mask_df_ip, mask_df_mac
+from scripts.IPMAC import mask_df_ip_v4, mask_df_mac
 from scripts.Cardnumber import mask_df_cardnumber
 from scripts.DifferencialPrivacy import mask_df_DP
 plt.style.use('ggplot')
 
 db = PostgresqlDatabase('postgres', host = 'localhost', port = '5432', user = 'postgres', password = '1')
-
 class BaseModel(Model):
     class Meta:
         database = db
@@ -30,6 +29,21 @@ class PersonalData(BaseModel):
     #bank_number = IntegerField()
     #PassportNumber = IntegerField()
 
+dbcopy = PostgresqlDatabase('postgrescopy', host = 'localhost', port = '5432', user = 'postgres', password = '1')
+class BaseModelCopy(Model):
+    class Meta:
+        database = dbcopy
+class PersonalDataMasked(BaseModelCopy):
+    name = CharField()
+    email = TextField()
+    IP = TextField()
+    MAC = TextField()
+    age = IntegerField()
+    creditcard = TextField()
+    phone = TextField()
+    salary = IntegerField()
+
+TablesMasked = [PersonalDataMasked]
 Tables = [PersonalData]
 
 def csv_files():
@@ -46,12 +60,12 @@ def insertsomedata():
     with db.atomic():
         for row in combined.itertuples():
             PersonalData.create(name = row.Name, age=row._2, email=row.email, salary = row.salary, creditcard = row.creditcard, phone=row.phone_number, IP = row.IP, MAC=row.MAC)
-def initialize(db=db, tables = Tables):
+def initialize(database=db, tables = Tables):
     '''Подключение к базе данных и пересоздание таблиц'''
-    db.connect()
+    database.connect()
     try:
-        db.drop_tables(Tables)
-        db.create_tables(Tables)
+        database.drop_tables(tables)
+        database.create_tables(tables)
     except:
         print('Cant create table')
 def getdict(tablename):
@@ -59,10 +73,18 @@ def getdict(tablename):
     return pd.DataFrame(tablename.select().dicts())
 
 def update_row(db, table_name, column, data, iter):
+    '''Функция обновления одной записи'''
     query = table_name.select()
     table_name.update(column=data).where(table_name.id == iter).execute()
 
+def insert_to_copy(database, table, df):
+    '''Добавление данных в копию БД'''
+    with database.atomic():
+        for row in df.itertuples():
+            table.create(name = row.name, age=row.age, email=row.email, salary = row.salary, creditcard = row.creditcard, phone=row.phone, IP = row.IP, MAC=row.MAC)
+
 def main():
+
     initialize()
     print('Подключено')
     db.create_tables([PersonalData])
@@ -76,6 +98,8 @@ def main():
               str(i.phone) + ' | IP:' + str(i.IP) + ' | MAC:' + str(i.MAC) + ' | creditcard:' + str(i.creditcard))
 
     data = getdict(PersonalData)
+    # print('Полученный датафрейм из БД:')
+    # print(data)
     # plt.hist(data['salary'])
     # plt.show()
     mask_df_fullname(data, 'name')
@@ -83,12 +107,17 @@ def main():
     mask_df_age_DP_custom(data, 'age', 0.5, sensitivity=5)
     mask_df_DP(data, 'salary', 0.5, 10000, 0, 1000000)
     mask_df_phone(data, 'phone')
-    mask_df_ip(data, 'IP')
+    mask_df_ip_v4(data, 'IP')
     mask_df_mac(data, 'MAC')
     mask_df_cardnumber(data, 'creditcard')
     # plt.hist(data['salary'])
     # plt.show()
-
+    print('Маскированный датафрейм из БД:')
+    print(data)
+    initialize(database=dbcopy, tables=TablesMasked)
+    dbcopy.create_tables(TablesMasked)
+    insert_to_copy(dbcopy, PersonalDataMasked, data)
 
 main()
+
 

@@ -57,8 +57,9 @@ def mask_mac(mac):
     mac_replacement = {}
     mac_replacement[mac] = mac_adress_generator()
     return mac_replacement[mac]
-
-def mask_df_ip(df,column):
+def mask_df_ip_v4(df,column):
+    df[column] = df[column].apply(lambda x: mask_ip_v4(x))
+def mask_df_ip_v6(df,column):
     df[column] = df[column].apply(lambda x: mask_ip_v6(x))
 def mask_df_mac(df, column):
     df[column] = df[column].apply(lambda x: mask_mac(x))
