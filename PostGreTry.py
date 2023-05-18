@@ -98,7 +98,7 @@ def main():
               str(i.phone) + ' | IP:' + str(i.IP) + ' | MAC:' + str(i.MAC) + ' | creditcard:' + str(i.creditcard))
 
     data = getdict(PersonalData)
-    # print('Полученный датафрейм из БД:')
+    # print('Полученный датафрейм из БД:'
     # print(data)
     # plt.hist(data['salary'])
     # plt.show()

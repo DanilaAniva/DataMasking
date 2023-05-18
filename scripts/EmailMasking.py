@@ -32,7 +32,7 @@ def generate_text(l):
     #l - граница количества символов, которые будут прибавлены
     '''Создадим случайный текст'''
     alphabet = string.ascii_letters + string.digits
-    randomword_list = pd.read_csv(r'RandomWordsOnEnglish.csv')
+    randomword_list = pd.read_csv(r'C:\Users\ktota\PycharmProjects\pythonProject\scripts\RandomWordsOnEnglish.csv')
     df = pd.DataFrame(randomword_list)
     randomword = str(secrets.choice(df.Word))
     text = randomword.join(secrets.choice(alphabet) for i in range(2+secrets.randbelow(l)))
