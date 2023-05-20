@@ -66,13 +66,8 @@ def laplace_dp_mechanism(value, epsilon, sensitivity=1):
     # print("Noise: {}".format(value - orig_value))
     return value
 
-def mask_df_age_DP_auto(df, column, epsilon=0.5):
-    '''#Маскирование датафрейма с алгоритмом Лапласа. Вычисление чувствительности как 1/кол-во записей'''
-    df[column] = df[column].apply(lambda x: filter_bounds(x, 18, 120))
-    sensitivity = 1/len(df[column])
-    df[column] = df[column].apply(lambda x: int(laplace_dp_mechanism(x, epsilon, sensitivity= sensitivity )))
 def mask_df_age_DP_custom(df,column,epsilon, sensitivity):
-    df[column] = df[column].apply(lambda x: filter_bounds(x, 18, 120))
+    df[column] = df[column].apply(lambda x: filter_bounds(x, 18, 125))
     df[column] = df[column].apply(lambda x: int(laplace_dp_mechanism(x, epsilon, sensitivity= sensitivity )))
 
 def mask_df_salary_DP(df,column):

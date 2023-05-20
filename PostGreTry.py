@@ -11,6 +11,7 @@ from scripts.PhoneNumber import mask_df_phone
 from scripts.IPMAC import mask_df_ip_v4, mask_df_mac
 from scripts.Cardnumber import mask_df_cardnumber
 from scripts.DifferencialPrivacy import mask_df_DP
+import numpy as np
 plt.style.use('ggplot')
 
 db = PostgresqlDatabase('postgres', host = 'localhost', port = '5432', user = 'postgres', password = '1')
@@ -98,22 +99,35 @@ def main():
               str(i.phone) + ' | IP:' + str(i.IP) + ' | MAC:' + str(i.MAC) + ' | creditcard:' + str(i.creditcard))
 
     data = getdict(PersonalData)
+    # print(np.mean(data['age']))
+    # print(np.mean(data['age'][:7]))
     # print('Полученный датафрейм из БД:'
-    # print(data)
-    # plt.hist(data['salary'])
-    # plt.show()
+    print(np.mean(data['salary']))
+    print(np.mean(data['salary'][:8]))
+    print(data)
+    plt.hist(data['age'], bins=40, label='x')
+    plt.xlabel('ε = 1')
+    plt.ylabel('кол-во записей')
+    # age_sensitivity
     mask_df_fullname(data, 'name')
     mask_df_email(data, 'email')
     mask_df_age_DP_custom(data, 'age', 0.5, sensitivity=5)
-    mask_df_DP(data, 'salary', 0.5, 10000, 0, 1000000)
+    mask_df_DP(data, 'salary', 0.5, 6968, 0, 1000000)
     mask_df_phone(data, 'phone')
     mask_df_ip_v4(data, 'IP')
     mask_df_mac(data, 'MAC')
     mask_df_cardnumber(data, 'creditcard')
-    # plt.hist(data['salary'])
+    # plt.hist(data['age'], bins=20)
+    # plt.xlabel('ε = 1')
+    # plt.ylabel('количество записей')
     # plt.show()
     print('Маскированный датафрейм из БД:')
-    print(data)
+    print(data['age'])
+    plt.hist(data['age'], bins=40, label='y')
+    plt.xlabel=('ε = 10')
+    plt.ylabel = ('Количество записей')
+    plt.show()
+    # print(np.mean(data['salary']))
     initialize(database=dbcopy, tables=TablesMasked)
     dbcopy.create_tables(TablesMasked)
     insert_to_copy(dbcopy, PersonalDataMasked, data)

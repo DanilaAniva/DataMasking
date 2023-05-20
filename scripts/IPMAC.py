@@ -11,7 +11,7 @@ def ipv4_generator():
                 '192.168.0.0', '192.18.0.0', '198.51.100.0',
                 '203.0.113.0', '240.0.0.0', '255.255.255.255']
     private = [10,127,169,172,192]
-    a = randint(0,255)
+    a = randint(1,255)
     if (a not in private):
         rndIP = [a,randint(0,255), randint(0,255), randint(0,255)]
         ip = '.'.join(str(x) for x in rndIP)
